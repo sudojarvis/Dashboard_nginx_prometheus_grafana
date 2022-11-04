@@ -26,24 +26,10 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ["localhost:9090"]
-
-  - job_name: 'nginx-exporter'
-
+      - targets: ["0.0.0.0:9090"]
+  - job_name: "telegraf"
     static_configs:
-      - targets: ['localhost:9113']
-
-  - job_name: 'telegraf'
-      static_configs:
-        - targets: ['localhost:9125']
-
-
-
-
-
-
-
-
-
-
- 
+      - targets: ["0.0.0.0:9125","172.22.0.1:9125"]
+  - job_name: "nginx"
+    static_configs:
+      - targets: ["172.22.0.1"]

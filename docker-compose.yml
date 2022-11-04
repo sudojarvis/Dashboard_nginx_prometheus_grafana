@@ -1,40 +1,46 @@
-version: '3'
+version: '2.0'
 services:
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.27.1
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+     
   web:
     image: nginx
     ports:
       - "80:80"
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
-  nginx-exporter:
-    image: nginx/nginx-prometheus-exporter
-    ports:
-      - "9113:9113"
-    command: 
-      - '-nginx.scrape-uri=http://localhost/nginx_status'
+  # nginx-exporter:
+  #   image: nginx/nginx-prometheus-exporter
+  #   ports:
+  #     - "9113:9113"
+  #   command: 
+  #     - -nginx.scrape-uri=http://localhost/nginx_status
   telegraf:
     image: telegraf:1.24
     ports:
       - "9125:9125"
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
-    depends_on:
-      - influxdb
-  influxdb:
-    image: influxdb:1.8
+  # influxdb:
+  #   image: influxdb:1.8
+  #   ports:
+  #     - "8086:8086"
+  #   volumes:
+  #     - ./influxdb:/var/lib/influxdb
+  #   env_file:
+  #     - configuration.env
+  grafana:
+    image: grafana/grafana
     ports:
-      - "8086:8086"
+      - "3000:3000"
     volumes:
-      - ./influxdb:/var/lib/influxdb
-    env_file:
-      - configuration.env
-
-
-  
- 
+      - ./grafana/provisioning/datasources:/etc/grafana/conf/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/conf/provisioning/dashboards
+      - ./grafana/provisioning/config.ini:/etc/grafana/conf/provisioning/default.ini
+    environment:
+      - GF_SECURITY_ADIMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
