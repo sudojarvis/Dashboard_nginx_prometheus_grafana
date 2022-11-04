@@ -29,7 +29,4 @@ scrape_configs:
       - targets: ["0.0.0.0:9090"]
   - job_name: "telegraf"
     static_configs:
-      - targets: ["0.0.0.0:9125","172.22.0.1:9125"]
-  - job_name: "nginx"
-    static_configs:
-      - targets: ["172.22.0.1"]
+      - targets: ["10.10.10.1:9125"]

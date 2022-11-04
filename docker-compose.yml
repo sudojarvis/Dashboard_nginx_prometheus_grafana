@@ -1,18 +1,30 @@
 version: '2.0'
 services:
   prometheus:
+    container_name: prometheus
     image: prom/prometheus:v2.27.1
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      nginx-proxy:
+        aliases:
+          - prometheus
+        ipv4_address: 10.10.10.50
      
   web:
     image: nginx
+    container_name: nginx
     ports:
       - "80:80"
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      nginx-proxy:
+        aliases:
+          - nginx
+        ipv4_address: 10.10.10.20
   # nginx-exporter:
   #   image: nginx/nginx-prometheus-exporter
   #   ports:
@@ -21,10 +33,16 @@ services:
   #     - -nginx.scrape-uri=http://localhost/nginx_status
   telegraf:
     image: telegraf:1.24
+    container_name: telegraf
     ports:
       - "9125:9125"
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+    networks:
+      nginx-proxy:
+        aliases:
+          - telegraf
+        ipv4_address: 10.10.10.30
   # influxdb:
   #   image: influxdb:1.8
   #   ports:
@@ -35,6 +53,7 @@ services:
   #     - configuration.env
   grafana:
     image: grafana/grafana
+    container_name: grafana
     ports:
       - "3000:3000"
     volumes:
@@ -44,3 +63,15 @@ services:
     environment:
       - GF_SECURITY_ADIMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      nginx-proxy:
+        aliases:
+          - grafana
+        ipv4_address: 10.10.10.40
+
+networks:
+  nginx-proxy:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24
