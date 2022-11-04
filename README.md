@@ -2,8 +2,6 @@
 
 To run this project you need to have docker and docker-compose installed on your machine.
 
-Before running the project you need to to install docker and docker-compose.
-
 # How to run
 
 1. Clone this repository
