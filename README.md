@@ -1,4 +1,4 @@
-# Description: This is a simple dashboard for nginx with prometheus and grafana
+# Description: This is a dashboard for nginx with prometheus and grafana
 
 To run this project you need to have docker and docker-compose installed on your machine.
 
